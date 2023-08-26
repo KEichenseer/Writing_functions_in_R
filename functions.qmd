@@ -1,0 +1,655 @@
+---
+title: | 
+  Writing functions in R
+subtitle: |
+  A community-driven R package
+  
+  ![](images/logo.png){fig-align="center" height=150}
+author: | 
+  [Kilian Eichenseer](mailto:kilian.eichenseer@durham.ac.uk), Durham University
+  
+affiliation: "Durham University"
+execute:
+  echo: true
+  eval: true
+format: 
+  revealjs:
+    logo: "images/logo.png"
+    footer: "[Writing functions in R](https://palaeoverse.org)"
+    theme: default
+    embed-resources: true
+    output-file: "index.html"
+    fontsize: 24pt
+    
+---
+
+# Function basics
+
+## What is a function
+takes input --> does something --> returns output
+
+::: fragment
+```{r}
+mean(c(1, 2, 3))
+```
+:::
+<br>
+
+::: fragment
+A function needs a <span style="color: cornflowerblue;">name</span>, <span style="color: green;">arguments</span> in (), and a <span style="color: darkorange;">body</span> in {}
+<pre><code>
+<span class="func-name">subtract</span> <- function(<span class="func-args">arg1, arg2</span>) { <span class="func-body">
+  arg1 - arg2 </span>
+} 
+</code></pre>
+:::
+
+```{r, echo = FALSE}
+subtract <- function(arg1, arg2) {
+  arg1 - arg2
+}
+```
+<br>
+
+::: fragment
+```{r}
+subtract(2, 1)
+```
+:::
+
+
+## Why do we need functions
+::: columns
+::: {.column width="50%"}
+- Readability
+- Organisation
+:::
+
+::: {.column width="50%"}
+- Modularity
+- Reusability
+:::
+:::
+
+::: fragment
+Imagine calculating the mean without standard functions like `mean` or `sum`: 
+:::
+
+::: fragment
+```{r}
+  data <- c(1,2,3)
+  total <- 0
+  count <- 0
+  for (value in data) {
+    total <- total + value
+    count <- count + 1
+  }
+  total/count
+
+```
+:::
+
+## Arguments
+Arguments need to be provided in the correct order, or specified by name:
+<br>
+
+::: fragment
+```{r}
+subtract(2, 1)
+```
+:::
+<br>
+
+::: fragment
+```{r}
+subtract(1, 2)
+```
+:::
+<br>
+
+::: fragment
+```{r}
+subtract(arg2 = 1, arg1 = 2)
+```
+:::
+
+## Default values
+Make function use more convenient, can hide complexities.
+
+::: fragment
+```{r, error=TRUE}
+subtract(2)
+```
+:::
+<br>
+
+::: fragment
+This will work if we set a default for `arg2`:
+```{r}
+subtract <- function(arg1, arg2 = 1) {
+  arg1 - arg2
+}
+```
+:::
+<br>
+
+::: fragment
+```{r}
+subtract(2)
+```
+:::
+<br>
+
+
+## Ellipsis ('…')
+Additional, optional arguments can be allowed by using '...' as the last argument:
+
+::: fragment
+```{r}
+my_plot <- function(arg1, arg2, ...) {
+  plot(arg1, arg2, ...)
+}
+```
+:::
+<br>
+
+::: fragment
+```{r, eval=FALSE}
+my_plot(2, 1, col = "red", pch = 17, cex = 2)
+```
+
+```{r, echo = FALSE}
+#| out-width: 29%
+#| fig-width: 2.5
+#| fig-height: 2.5
+#| fig-align: left
+par(mar=c(4,4,0.2,0.2), mgp = c(2.25,.9,0))
+my_plot(2, 1, col = "red", pch = 17, cex = 2)
+
+```
+:::
+
+## Return
+A function generally should return something, but this does not:
+
+::: fragment
+```{r}
+subtract <- function(arg1, arg2) {
+  result <- arg1 - arg2
+}
+```
+:::
+
+::: fragment
+```{r}
+subtract(2,1)
+```
+:::  
+<br>  
+
+::: fragment
+Return explicitly with `return`, or place return value at the end of the function:
+```{r}
+subtract <- function(arg1, arg2) {
+  result <- arg1 - arg2
+  return(result)
+}
+```
+:::
+
+::: fragment
+```{r}
+subtract(2,1)
+```
+:::
+<br>
+
+
+## Return multiple objects
+::: fragment
+```{r}
+just_return <- function(arg1, arg2) {
+return(arg1)
+return(arg2)
+}
+```
+:::
+
+::: fragment
+```{r}
+just_return(2, 1)
+```
+This did not work as intended. R functions only return one object. Instead use lists or other data structures:
+:::
+
+::: fragment
+```{r}
+just_return <- function(arg1, arg2) {
+return(c(arg1, arg2))
+}
+```
+:::
+
+::: fragment
+```{r}
+just_return(2, 1)
+```
+:::
+
+
+
+## Binary operators
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+Standard function syntax:
+```{r}
+sum(c(1,2))
+```
+:::
+
+:::
+
+::: {.column width="50%"}
+::: fragment
+Operator syntax:
+```{r}
+1 + 2
+```
+:::
+
+:::
+:::
+
+::: columns
+::: {.column width="50%"}
+::: fragment
+Most binary operators come in `%`:
+:::
+
+:::
+
+::: {.column width="50%"}
+::: fragment
+```{r}
+3 %in% c(1,2,3)
+```
+:::
+
+:::
+:::
+
+<br>
+
+::: fragment
+Custom binary operators -- let's define an operator for "not in":
+```{r}
+`%!in%` <- function(x, y) !(x %in% y)
+```
+:::
+
+::: fragment
+```{r}
+3 %!in% c(1,2,3)
+```
+:::
+
+## Control structures -- if
+`if` a condition is true, do something.
+
+::: fragment
+```{r}
+if (1 + 1 == 2) print("True")
+```
+:::
+
+<br>
+
+::: fragment
+```{r}
+add_or_subtract <- function(arg1, arg2, operation) {
+ if (operation == "add") {
+   result <- arg1 + arg2
+ }
+ if (operation == "subtract") {
+   result <- arg1 + arg2
+ }
+ result
+}
+```
+:::
+
+::: fragment
+```{r}
+add_or_subtract(2,1,"add")
+```
+:::
+
+## Control structures -- else
+`else` instructs what to do when the `if` condition is not met.
+
+::: fragment
+```{r}
+if (1 + 1 == 3) print("True") else print("False")
+```
+:::
+
+<br>
+
+::: fragment
+```{r}
+add_or_subtract <- function(arg1, arg2, operation) {
+ if (operation == "add") {
+   result <- arg1 + arg2
+ } else {
+   result <- arg1 - arg2
+ }
+ return(result)
+}
+```
+:::
+
+::: fragment
+```{r}
+add_or_subtract(2,1,"subtract")
+```
+:::
+
+## Control structures -- switch
+Instead of many `if` and `else` statements, try `switch`
+
+::: fragment
+```{r}
+fossil_description <- function(fossil) {
+ switch(fossil,
+  ammonite = "coiled shell",
+  Tyrannosaurus = "serrated teeth",
+  Lepidodendron = "scaly bark",	
+  "not a fossil"
+ )
+}
+```
+:::
+
+::: fragment
+```{r}
+fossil_description("Tyrannosaurus")
+```
+:::
+::: fragment
+```{r}
+fossil_description("Lewis")
+```
+:::
+
+## Control structures -- for loops
+Loops are used for repeating similar actions multiple times. `for` loops iterate over a set of values. The iterator (`i`) changes with every iteration of the loop:
+
+::: fragment
+```{r}
+for(i in c(1,2,3)) print(i)
+```
+:::
+
+::: fragment
+To generate sequences of integers, we can use `seq_len`. Let's make a function:
+```{r}
+print_repetitions <- function(n) {
+ for (i in seq_len(n)) { 
+   print(i)
+ }
+}
+```
+:::
+
+::: fragment
+```{r}
+print_repetitions(2)
+```
+:::
+
+## Control structures -- while loops
+`while` loops repeat a task until a condition is no longer met.
+
+::: fragment
+```{r}
+add_until_4 <- function(x) {
+  while(x < 4) {
+    x <- x + 1
+    print(x)
+  }
+}
+```
+:::
+
+::: fragment
+```{r}
+add_until_4(1)
+```
+:::
+
+## Exercise 1 - Function for latitudinal binning
+
+
+::: columns
+::: {.column width="70%"}
+Create a function that can sort a data.frame into latitudinal bins. That is, we want a new column that identifies the bin of each entry of the data set. As an exemplary data set, we can use the `reefs` data from `palaeoverse`. 
+
+:::
+
+::: {.column width="30%"}
+![](images/earth.png){fig.align="center" height="140pt"}
+:::
+:::
+
+<div style="background-color: #212F3C; color: #FFFFFF; padding: 15px;">
+If you are new to writing R functions, try a simpler function that can sort data into the northern and southern hemisphere.
+</div>
+
+<div style="margin-top: 0.75em;"></div>
+
+Here is what the result may look like when sorted into hemispheres:
+```{r, echo=FALSE}
+library(palaeoverse)
+reefs$hemisphere <- ifelse(reefs$lat>=0, "north", "south")
+```
+
+```{r}
+reefs[72:73, c("name", "lat", "hemisphere")]
+```
+
+## Exercise 1 - One possible solution
+
+
+# Best practices
+
+## Naming style
+Give variables and functions consistent names. These are the two most common styles:
+
+<div style="margin-top: 0.75em;"></div>
+
+::: columns
+::: {.column width="50%"}
+snake_case
+
+<div style="width: 300pt; height: 200pt; display: flex; align-items: center; justify-content: center; background-color: white;">
+  <img src="images/snake.jpg">
+</div>
+
+used by [Tidyverse's style guide](https://style.tidyverse.org/index.html)
+
+:::
+
+::: {.column width="50%"}
+CamelCase
+
+<div style="width: 300pt; height: 200pt; display: flex; align-items: center; justify-content: center; background-color: white;">
+  <img src="images/camel.png" style="max-height: 300pt; max-width: 200pt;">
+</div>
+
+used by [Google’s R style guide](https://google.github.io/styleguide/Rguide.html)
+
+:::
+:::
+
+## Clean coding
+Common practices:
+
+::: fragment 
+- Avoid renaming existing functions and variables
+```{r}
+mean <- mean(c(1, 2, 3))
+mean
+```
+:::
+
+::: fragment 
+```{r}
+mean(c(1, 2, 3))
+```
+R is clever, in this case this still works.
+:::
+
+<div style="margin-top: 0.25em;"></div>
+
+::: fragment
+- Use `<-` for assignment, not `=`
+```{r}
+data = c(1, 2, 3)
+data <- c(1, 2, 3)
+```
+:::
+
+<div style="margin-top: 0.25em;"></div>
+
+Example of a detailed style guide: [Tidyverse's style guide](https://style.tidyverse.org/index.html)
+
+## Comments
+- document purpose and usage of code
+- explain complex / non-intuitive code
+
+::: fragment
+
+```{r, eval=FALSE}
+# Calculate convex hull
+tmp <- tmp[chull(x = tmp[, lng], 
+                 y = tmp[, lat]), c(lng, lat)]
+```
+:::
+
+::: fragment
+
+- organise code into sections
+```{r, eval=FALSE}
+#=== Set-up ===
+  unique_taxa <- unique(occdf[, name])
+  # Order taxa
+  unique_taxa <- unique_taxa[order(unique_taxa)]
+#=== convex hull  ===
+```
+:::
+
+::: fragment
+Good code needs less comments - but comment enough that you can still use your code two years later.
+:::
+
+## Comments
+
+Add some general information in the beginning of a large R script.
+```{r, eval = FALSE}
+### Change point regression analysis
+### July 2021
+### Kilian Eichenseer
+###
+### Bayesian algorithm for finding a change point in 
+### the linear relationship between two variables. 
+### Uses JAGS (https://mcmc-jags.sourceforge.io/).
+
+### Generate the data
+set.seed(10) 
+n <- 60 # number of total data points
+```
+
+... or use proper documentation
+
+## Documentation
+
+```{r, eval = FALSE}
+?mean
+```
+
+![](images/meanhelp.png)
+
+## roxygen2
+
+- R package, install with `install.packages("roxygen2")`
+- Used to create documentation for R packages (functions, data, …)
+- Start every line of documentation with `’#`
+
+::: fragment 
+
+This could generate documentation for the `subtract` function from earlier:
+```{r eval = FALSE}
+#' Subtraction
+#' 
+#' Subtracts `arg2` from `arg1`
+#'
+#' @param arg1 `Numeric`. First argument.
+#' @param arg2 `Numeric`. Second argument.
+#' @return A `numeric` containing the difference 
+#' between `arg1` and `arg2`.
+#' @examples
+#' subtract(2,1)
+```
+:::
+
+## ?subtract
+![](images/subtraction.png)
+
+## Exercise 2 - Document your function
+
+
+
+## blank
+::: columns
+::: {.column width="50%"}
+-   [Lewis A. Jones](mailto:LewisAlan.Jones@uvigo.es), Universidade de Vigo
+-   [William Gearty](mailto:willgearty@gmail.com), American Museum of Natural History
+-   [Bethany J. Allen](mailto:Bethany.Allen@bsse.ethz.ch), ETH Zürich
+-   [Kilian Eichenseer](mailto:kilian.eichenseer@gmail.com), Durham University
+-   [Christopher D. Dean](christopherdaviddean@gmail.com), University College London
+-   [Sofía Galván](mailto:sofia.galvan@uvigo.es), Universidade de Vigo
+-   [Miranta Kouvari](mailto:kouvari.miranta@gmail.com), University College London/Natural History Museum
+:::
+
+::: {.column width="50%"}
+-   [Pedro L. Godoy](mailto:pedrolorenagodoy@gmail.com), University of São Paulo/Stony Brook University
+-   [Cecily Nicholl](cecily.nicholl@ucl.ac.uk), University College London
+-   [Lucas Buffan](mailto:lucas.buffan@ens-lyon.fr), École Normale Supérieure de Lyon
+-   [Erin M. Dillon](mailto:erinmdillon@ucsb.edu), Smithsonian Tropical Research Institute/University of California
+-   [Alfio A. Chiarenza](mailto:a.chiarenza15@gmail.com), Universidade de Vigo
+:::
+:::
+
+::: notes
+Before I jump into the presentation, I wanted to first note that the development of the palaeoverse R package was by no means a solo-effort. All of these fantastic people had a hand in getting it together.
+:::
+
+## Funders {.smaller}
+
+-   European Union's Horizon 2020 research and innovation program (MAPAS project)
+    -   Grant number: 947921
+-   The Royal Society
+    -   Grant numbers: RF_ERE_210013, RGF_R1_180020, and RGF_EA_180318
+-   Juan de la Cierva-formación fellowship
+    -   FJC2020-044836-I / MCIN /AEI / 10.13039 /501100011033
+-   ETH+ Research Grant (BECCY project)
+-   FAPESP Postdoctoral fellowship
+    -   Grant number: 2022/05697-9
+-   Population Biology Program of Excellence Postdoctoral Fellowship (the University of Nebraska-Lincoln)
+-   Lerner-Gray Postdoctoral Research Fellowship (American Museum of Natural History)
+
+::: notes
+I would also like to say thank you to all our funding bodies which supported our contributions during the development of the package.
+:::
