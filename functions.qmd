@@ -459,7 +459,7 @@ reefs$hemisphere <- ifelse(reefs$lat>=0, "north", "south")
 reefs[72:73, c("name", "lat", "hemisphere")]
 ```
 
-## Exercise 1 - One possible solution
+## Exercise 1 - My solution
 
 
 # Best practices
@@ -566,9 +566,9 @@ Add some general information in the beginning of a large R script.
 ### the linear relationship between two variables. 
 ### Uses JAGS (https://mcmc-jags.sourceforge.io/).
 
-### Generate the data
+### Generate data
 set.seed(10) 
-n <- 60 # number of total data points
+n <- 60 # total number of data points
 ```
 
 ::: fragment
@@ -607,13 +607,184 @@ This could generate documentation for the `subtract` function from earlier:
 :::
 
 ## ?subtract
+
 ![](images/subtraction.png)
 
 ## Exercise 2 - Document your function
 
+::: columns
+::: {.column width="70%"}
+- Make sure your code follows the same style throughout
+- Add in-line comments if necessary
+- Create documentation with `roxygen2`
+
+:::
+
+::: {.column width="30%"}
+![](images/earth.png){fig.align="center" height="140pt"}
+:::
+:::
+
+
+## Exercise 2 - Create a package
+From RStudio, create a New Directory (`File -> New Project...`)
+
+![](images/roxygensetup1.png){fig.align="center" height="400pt"}
+
+
+## Exercise 2 - Create a package
+
+![](images/roxygensetup2.png){fig.align="center"}
+
+
+## Exercise 2 - Create a package
+
+::: columns
+::: {.column width="40%"}
+- Save functions in the `R` folder as .R files
+- Documentation will be automatically created in the `man` folder
+- You may need to delete the `NAMESPACE` file once to avoid warnings
+
+:::
+
+::: {.column width="60%"}
+![](images/roxygensetup3.png){fig.align="center"}
+:::
+
+:::
+
+
+## Exercise 2 - use roxygen2
+
+We start by installing `roxygen2` and loading it:
+```{r eval = FALSE}
+install.packages("roxygen2")
+library("roxygen2")
+```
+
+<div style="margin-top: 1.25em;"></div>
+
+To generate documentation from our roxygen2 comments, which are denoted by the `#'` tags, run 
+```{r eval = FALSE}
+roxygenise()
+```
+or press `Ctrl + Shift + D`.
+
+<div style="margin-top: 1.25em;"></div>
+
+We can now read the documentation of our function by calling
+```{r eval = FALSE}
+?my_function # use the name of your documented function
+```
+
+## Exercise 2 - My solution
+
+
+# Testing and Debugging
+
+## Error handling
+Very helpful in complex and nested functions
+
+::: fragment
+```{r}
+subtract(2, 1)
+```
+:::
+
+::: fragment
+```{r, error=TRUE}
+subtract("2", 1)
+```
+:::
+
+<div style="margin-top: 0.25em;"></div>
+
+::: fragment
+Check that input is correct and display custom error messages:
+```{r}
+subtract <- function(arg1, arg2) {
+  if (is.numeric(arg1) == FALSE) {
+    stop("`arg1` must be numeric") 
+    }
+  arg1 - arg2
+}
+```
+:::
+
+::: fragment
+```{r, error=TRUE}
+subtract("2", 1)
+```
+:::
+
+## tryCatch
+Use if you anticipate an error but want function to continue.
+
+<div style="margin-top: 0.5em;"></div>
+
+::: fragment
+Let's try to generate data from a multivariate normal distribution:
+```{r, error=TRUE}
+mvnfast::rmvn(1, mu = c(0,0), sigma = matrix(rep(1,4), 2))
+```
+:::
+
+<div style="margin-top: 0.5em;"></div>
+
+
+::: fragment
+`mvnfast::rmvn` is fast but fails for some problematic `sigma` values. In case it fails, we use `MASS::mvrnorm` instead:
+
+```{r, error=TRUE}
+my_rmvn <- function(n, mu, sigma) {
+  tryCatch(mvnfast::rmvn(n, mu, sigma),
+           error = function(e) MASS::mvrnorm(n, mu, sigma))
+}
+```
+:::
+
+::: fragment
+```{r, error=TRUE}
+my_rmvn(n = 1, mu = c(0,0), sigma = matrix(rep(1,4), 2))
+```
+:::
+
+
+## Break points
+Break points allow you to look inside your function's environment.
+Click next to a line of code in your function to activate a break point (a <span style="color: red;">red</span> dot appears):
+
+::: fragment
+![](images/debug1.png){fig.align="center"} 
+:::
+
+::: fragment
+Now run the function...
+```{r, eval=FALSE}
+my_rmvn(n = 1, mu = c(0,0), sigma = matrix(rep(1,4), 2))
+```
+:::
+
+::: fragment
+You may need to run `devtools::load_all()` first.
+:::
+
+## Break points
+
+![](images/debug2.png){fig.align="center"} 
+
+## Break points
+We can now browse the function environment in the console like we normally can browse the global environment. For example we can look at `sigma`:
+
+![](images/debug3.png){fig.align="center" height="225pt"} 
+
+Press `Stop` to end the browsing. Don't forget to deactivate the break point by clicking on the <span style="color: red;">red</span> dot in the script.
+
+## Tests
 
 
 ## blank
+
 ::: columns
 ::: {.column width="50%"}
 -   [Lewis A. Jones](mailto:LewisAlan.Jones@uvigo.es), Universidade de Vigo
