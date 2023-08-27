@@ -551,7 +551,7 @@ tmp <- tmp[chull(x = tmp[, lng],
 :::
 
 ::: fragment
-Good code needs less comments - but comment enough that you can still use your code two years later.
+Good code shouldn't need a large amount of comments - but comment enough that you can still use your code two years later.
 :::
 
 ## Comments
@@ -571,7 +571,9 @@ set.seed(10)
 n <- 60 # number of total data points
 ```
 
-... or use proper documentation
+::: fragment
+Even better: add formal documentation.
+:::
 
 ## Documentation
 
