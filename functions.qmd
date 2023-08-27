@@ -683,7 +683,7 @@ We can now read the documentation of our function by calling
 # Testing and Debugging
 
 ## Error handling
-Very helpful in complex and nested functions
+Very helpful in complex functions
 
 ::: fragment
 ```{r}
@@ -749,6 +749,27 @@ my_rmvn(n = 1, mu = c(0,0), sigma = matrix(rep(1,4), 2))
 ```
 :::
 
+## Traceback
+If something went wrong, find out where using `traceback()`:
+
+::: fragment
+
+```{r,error=TRUE}
+my_rmvn(n = 1, mu = 0, sigma = matrix(rep(1,4), 2))
+```
+
+::: 
+
+<div style="margin-top: 1em;"></div>
+
+::: fragment
+
+```{r,eval=FALSE}
+traceback()
+```
+
+![](images/traceback.png){fig.align="center"}
+:::
 
 ## Break points
 Break points allow you to look inside your function's environment.
@@ -781,7 +802,109 @@ We can now browse the function environment in the console like we normally can b
 Press `Stop` to end the browsing. Don't forget to deactivate the break point by clicking on the <span style="color: red;">red</span> dot in the script.
 
 ## Tests
+Functions should be tested before they are used.
 
+<div style="margin-top: 2em;"></div>
+
+::: fragment
+Sometimes, interactive testing may be enough.
+
+For example, `identical()` tests whether two objects are exactly equal:
+```{r}
+identical(subtract(2,1),
+          1)
+```
+
+:::
+
+<div style="margin-top: 2em;"></div>
+
+
+::: fragment
+
+Automated testing with the [testthat](https://testthat.r-lib.org/) R package is superior.
+
+:::
+
+## testthat
+
+- Used to create unit tests for R packages that can be run automatically
+- R package, install with `install.packages("testthat")`
+- Set up infrastructure for a test with `usethis::test_name`
+
+<div style="margin-top: 1em;"></div>
+
+
+::: fragment 
+Create a test file for the `subtract` function:
+
+```{r eval=FALSE}
+usethis::use_test("subtract")
+```
+
+This has created a `test-subtract.R` file in `package_name/tests/testthat/`
+
+:::
+
+## testthat
+
+In the `test-subtract.R` file, we can write tests, for example:
+```{r, eval=FALSE}
+test_that("subtraction works", {
+  expect_equal(subtract(2,1),
+               1)
+})
+```
+
+::: fragment
+
+If we run this test, we should get <span style="display: inline-block;"><img src="images/testpassed.png" height="35pt" align="center"></span>
+
+:::
+
+::: fragment
+
+We can also run all of our tests at once with 
+```{r, eval=FALSE}
+testthat::test_local()
+```
+
+![](images/testlocal.png){fig.align="center" height="140pt"}
+
+:::
+
+
+## testthat
+Useful tests include:
+
+::: columns
+::: {.column width="50%"}
+- expect_equal
+- expect_true, expect_false
+:::
+
+::: {.column width="50%"}
+- expect_error
+- expect_snapshot (for results that are difficult to describe with code)
+:::
+
+:::
+
+::: fragment
+The `expect_doppelganger()` function from the `vdiffr` package is good for testing plots:
+
+```{r, eval=FALSE}
+test_that("plot function works", {
+  plot_1 <- function() plot(1,2)
+  vdiffr::expect_doppelganger("plot_1", plot_1)
+
+```
+
+This will create an image in the `tests/testthat/_snaps/function_name` directory. Upon first calling this, inspect the image to see if it is as expected. Future tests will fail if the function call in the test changes the image.
+
+:::
+
+## Exercise 3 - Test your function
 
 ## blank
 
