@@ -2,7 +2,7 @@
 title: | 
   Writing functions in R
 subtitle: |
-  A community-driven R package
+  Palaeoverse workshop 2023
   
   ![](images/logo.png){fig-align="center" height=150}
 author: | 
@@ -15,7 +15,6 @@ execute:
 format: 
   revealjs:
     logo: "images/logo.png"
-    footer: "[Writing functions in R](https://palaeoverse.org)"
     theme: default
     embed-resources: true
     output-file: "index.html"
@@ -824,6 +823,9 @@ identical(subtract(2,1),
 
 Automated testing with the [testthat](https://testthat.r-lib.org/) R package is superior.
 
+<br>
+
+Read more on testing at [r-pkgs.org](https://r-pkgs.org/testing-basics.html).
 :::
 
 ## testthat
@@ -844,6 +846,7 @@ usethis::use_test("subtract")
 
 This has created a `test-subtract.R` file in `package_name/tests/testthat/`
 
+
 :::
 
 ## testthat
@@ -862,14 +865,20 @@ If we run this test, we should get <span style="display: inline-block;"><img src
 
 :::
 
-::: fragment
+## testthat
 
-We can also run all of our tests at once with 
+We can also run all of our tests at once with `test_local` or `test_package("my_package")`:
 ```{r, eval=FALSE}
 testthat::test_local()
 ```
 
-![](images/testlocal.png){fig.align="center" height="140pt"}
+![](images/testlocal.png){fig.align="center" height="80pt"}
+
+::: fragment
+
+If you have the `devtools` package installed, you can also use `devtools::test()` by pressing `Test` in the `Build` tab of Rstudio:
+
+![](images/testbutton.png){fig.align="center" height="150pt"}
 
 :::
 
@@ -891,7 +900,7 @@ Useful tests include:
 :::
 
 ::: fragment
-The `expect_doppelganger()` function from the `vdiffr` package is good for testing plots:
+For testing plot functions, the `expect_doppelganger()` function from the `vdiffr` package can be used:
 
 ```{r, eval=FALSE}
 test_that("plot function works", {
@@ -904,7 +913,155 @@ This will create an image in the `tests/testthat/_snaps/function_name` directory
 
 :::
 
+## Test coverage
+
+To check how much of your package is covered by tests, the `covr` package is helpful:
+
+::: fragment
+```{r, eval=FALSE}
+covr::package_coverage()
+```
+
+![](images/packagecoverage.png){fig.align="center" height="50pt"}
+:::
+
+<div style="margin-top: 1em;"></div>
+
+::: fragment
+You may need to unload the package before using the `covr` package, e.g. with 
+```{r, eval=FALSE}
+devtools::unload()
+```
+:::
+
+## Test coverage
+
+The `report()` function lets you check test coverage line by line:
+
+::: fragment
+```{r, eval=FALSE}
+covr::report()
+```
+
+![](images/report.png){fig.align="center" height="150pt"}
+:::
+
+
+::: fragment
+
+![](images/report2.png){fig.align="center" height="200pt"}
+:::
+
 ## Exercise 3 - Test your function
+
+::: columns
+::: {.column width="70%"}
+- Add tests for your function using `testthat` functionality 
+- Add custom error messages to your function, flagging inappropriate input
+
+:::
+
+::: {.column width="30%"}
+![](images/earth.png){fig.align="center" height="140pt"}
+:::
+:::
+
+::: fragment
+
+Setup for testing:
+```{r eval=FALSE}
+install.packages(testthat)
+install.packages(usethis)
+usethis::use_test("function_name")
+```
+
+:::
+
+# Advanced tools
+
+## apply
+- `apply` and related functions apply a function to elements of arrays, lists, ...
+- more concise than loops, doesn't change global environment 
+
+::: fragment
+For example, to get the class of the first three columns of the `reefs` data:
+```{r}
+reef_classes <- rep(NA,3)
+for (i in 1:3) {
+  reef_classes[i] <- class(palaeoverse::reefs[,i])
+}
+reef_classes
+```
+
+:::
+
+::: fragment
+
+Or with apply:
+```{r}
+apply(palaeoverse::reefs[,1:3], MARGIN = 2, FUN = class)
+```
+
+:::
+
+## apply
+
+Let's have a look what happened there. `apply(X, MARGIN, FUN)` takes an array X (our `reefs` dataframe), and applies a function (FUN) to elements of that array, specified by MARGIN. 
+<div style="margin-top: 1em;"></div>
+
+::: fragment
+
+MARGIN = 2 indicates columns, MARGIN = 1 would be rows. So here we applied the `class` function to every column of `reefs`.
+
+![](images/reefsdf.png){fig.align="center" height="200pt"}
+:::
+
+::: fragment
+`apply` simplifies the output, so here it returned a `vector` with one element for each column.
+:::
+
+## lapply
+
+`lapply` is similar to apply but for list or vector input. It returns a list for each element of the data.
+
+::: fragment
+``` {r}
+data <- list(c(1, 2, 3), c(4, 5))
+lapply(data, mean)
+```
+
+:::
+
+<div style="margin-top: 0.75em;"></div>
+
+::: fragment
+`sapply` does the same, but also tries to simplify the output; here we get a vector:
+``` {r}
+data <- list(c(1, 2, 3), c(4, 5))
+sapply(data, mean)
+```
+:::
+
+## vapply
+
+`vapply` is a safer version of `sapply`, it requires the user to specify the anticipated class and length of the elements of the output:
+
+<div style="margin-top: 1.25em;"></div>
+
+::: fragment
+
+``` {r}
+data <- list(c(1, 2, 3), c(4, 5))
+vapply(data, FUN = mean, FUN.VALUE = numeric(1))
+```
+
+<div style="margin-top: 1em;"></div>
+
+Here, we specified in FUN.VALUE that each element of the output should be a numeric of length 1.
+:::
+
+## Environment and scope
+
 
 ## blank
 
