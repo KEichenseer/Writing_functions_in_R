@@ -492,6 +492,11 @@ used by [Google’s R style guide](https://google.github.io/styleguide/Rguide.ht
 :::
 :::
 
+::: fragment
+Internal functions in R packages are often prefixed with a dot, e.g. `.my_internal_function`. Don't prefix the file name with a dot.
+
+:::
+
 ## Clean coding
 Common practices:
 
@@ -522,7 +527,35 @@ data <- c(1, 2, 3)
 
 <div style="margin-top: 0.25em;"></div>
 
+::: fragment 
+
 Example of a detailed style guide: [Tidyverse's style guide](https://style.tidyverse.org/index.html)
+
+:::
+
+## lintr
+The `lintr` package let's you check that your code conforms to your chosen standard.
+
+<div style="margin-top: 1em;"></div>
+
+::: fragment
+Here, we choose the tidyverse style:
+```{r eval=FALSE}
+install.packages("lintr")
+lintr::use_lintr(type = "tidyverse")
+```
+:::
+
+<div style="margin-top: 1em;"></div>
+
+::: fragment
+And now we check for style violations in our project directory:
+```{r eval=FALSE}
+lintr::lint_dir()
+```
+![](images/lintr.png){fig.align="center" height="120pt"}
+
+:::
 
 ## Comments
 - document purpose and usage of code
@@ -608,6 +641,17 @@ This could generate documentation for the `subtract` function from earlier:
 ## ?subtract
 
 ![](images/subtraction.png)
+## roxygen2
+
+Commonly used roxygen2 tags are:
+
+- @param for function parameters
+- @return for the function output
+- @details for additional 
+- @example provide examples of the function
+- @seealso reference related functions or external resources
+
+For more details, see https://r-pkgs.org/man.html
 
 ## Exercise 2 - Document your function
 
@@ -661,7 +705,10 @@ install.packages("roxygen2")
 library("roxygen2")
 ```
 
-<div style="margin-top: 1.25em;"></div>
+<div style="margin-top: 0.5em;"></div>
+To generate a documentation template for your function, click on `Code --> Insert Roxygen Skeleton` in Rstudio.
+
+<div style="margin-top: 0.5em;"></div>
 
 To generate documentation from our roxygen2 comments, which are denoted by the `#'` tags, run 
 ```{r eval = FALSE}
@@ -981,7 +1028,7 @@ usethis::use_test("function_name")
 
 ## apply
 - `apply` and related functions apply a function to elements of arrays, lists, ...
-- more concise than loops, doesn't change global environment 
+- more concise than loops and don't change global environment 
 
 ::: fragment
 For example, to get the class of the first three columns of the `reefs` data:
@@ -1060,49 +1107,127 @@ vapply(data, FUN = mean, FUN.VALUE = numeric(1))
 Here, we specified in FUN.VALUE that each element of the output should be a numeric of length 1.
 :::
 
-## Environment and scope
+## Environment
+Environment can be conceptualised as a place where objects with a name and value exist.
+
+::: fragment
+
+For example, when we run 
+```{r} 
+x <- 1
+```
+
+`x` now exists in the global environment, and has the value `1`.
+
+:::
+
+<br>
+
+::: fragment
+Each function, `for` loop, ..., creates its own environment. 
+:::
+
+## Environment
+
+If we run the following function to assign to `b` the value of `a`
+
+``` {r}
+a_to_b <- function(a) b <- a
+a_to_b(a = 1)
+```
+
+::: fragment 
+and then look for `b` in the global environment
+:::
+
+::: fragment
+``` {r, error=TRUE}
+b
+```
+
+we get an error because `b` only existed within the function environment. 
+:::
+
+<br>
+
+::: fragment 
+More on environments: [adv-r.hadley.nz/environments.html](https://adv-r.hadley.nz/environments.html)
+
+:::
 
 
-## blank
+## Scoping
+
+R uses scoping rules to look for variables (or functions). If a variable is not found in a function environment, R looks in the parent environment (i.e. the environment in which the function was created).
+
+::: fragment
+```{r} 
+x <- 1
+double_x <- function(y) 2 * x + y
+double_x(0)
+```
+
+:::
+
+::: fragment
+
+`x` is a free variable in the `double_x` function -- it is not supplied to or defined in the function. Instead, it's looked up in the environment where `double_x` was created, the global environment.
+
+<div style="margin-top: 1em;"></div>
+
+This can get tricky, see here for more details: [bookdown.org/rdpeng/rprogdatascience/scoping-rules-of-r.html](https://bookdown.org/rdpeng/rprogdatascience/scoping-rules-of-r.html)
+
+:::
+
+## Measuring performance
+If you have large data sets and complex functions, you may want to enhance their performance.
+
+<br>
+
+::: fragment
+To check how long an operation takes, use system.time:
+
+```{r}
+system.time(rnorm(10^6))
+```
+
+:::
+
+## Measuring performance
+
+The `microbenchmark` package performs an operation many times, and measures the average time it takes. You can also compare different operations.
+
+<br>
+
+::: fragment
+What is faster, `rnorm` or `rlnorm`?
+```{r}
+microbenchmark::microbenchmark(rnorm(10^4),
+                               rlnorm(10^4))
+
+```
+:::
+
+## Profiling
+
+## Speeding up functions
+
+- vectorisation
+- outer
+
+## Rcpp
+
+## Exercise 4
 
 ::: columns
-::: {.column width="50%"}
--   [Lewis A. Jones](mailto:LewisAlan.Jones@uvigo.es), Universidade de Vigo
--   [William Gearty](mailto:willgearty@gmail.com), American Museum of Natural History
--   [Bethany J. Allen](mailto:Bethany.Allen@bsse.ethz.ch), ETH Zürich
--   [Kilian Eichenseer](mailto:kilian.eichenseer@gmail.com), Durham University
--   [Christopher D. Dean](christopherdaviddean@gmail.com), University College London
--   [Sofía Galván](mailto:sofia.galvan@uvigo.es), Universidade de Vigo
--   [Miranta Kouvari](mailto:kouvari.miranta@gmail.com), University College London/Natural History Museum
+::: {.column width="70%"}
+- Can you use apply or similar functions to reduce the amount of code?
+- Profile your function. Are there any slow parts?
+- Can you use vectorisation or other tricks to speed it up?
 :::
 
-::: {.column width="50%"}
--   [Pedro L. Godoy](mailto:pedrolorenagodoy@gmail.com), University of São Paulo/Stony Brook University
--   [Cecily Nicholl](cecily.nicholl@ucl.ac.uk), University College London
--   [Lucas Buffan](mailto:lucas.buffan@ens-lyon.fr), École Normale Supérieure de Lyon
--   [Erin M. Dillon](mailto:erinmdillon@ucsb.edu), Smithsonian Tropical Research Institute/University of California
--   [Alfio A. Chiarenza](mailto:a.chiarenza15@gmail.com), Universidade de Vigo
+::: {.column width="30%"}
+![](images/earth.png){fig.align="center" height="140pt"}
 :::
 :::
 
-::: notes
-Before I jump into the presentation, I wanted to first note that the development of the palaeoverse R package was by no means a solo-effort. All of these fantastic people had a hand in getting it together.
-:::
-
-## Funders {.smaller}
-
--   European Union's Horizon 2020 research and innovation program (MAPAS project)
-    -   Grant number: 947921
--   The Royal Society
-    -   Grant numbers: RF_ERE_210013, RGF_R1_180020, and RGF_EA_180318
--   Juan de la Cierva-formación fellowship
-    -   FJC2020-044836-I / MCIN /AEI / 10.13039 /501100011033
--   ETH+ Research Grant (BECCY project)
--   FAPESP Postdoctoral fellowship
-    -   Grant number: 2022/05697-9
--   Population Biology Program of Excellence Postdoctoral Fellowship (the University of Nebraska-Lincoln)
--   Lerner-Gray Postdoctoral Research Fellowship (American Museum of Natural History)
-
-::: notes
-I would also like to say thank you to all our funding bodies which supported our contributions during the development of the package.
-:::
