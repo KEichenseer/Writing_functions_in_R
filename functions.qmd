@@ -2,7 +2,7 @@
 title: | 
   Writing functions in R
 subtitle: |
-  Palaeoverse workshop 2023
+  R for palaeobiologists: Workshop and Hackathon
   
   ![](images/logo.png){fig-align="center" height=150}
 author: | 
@@ -1475,6 +1475,7 @@ microbenchmark::microbenchmark(
   times = 100)
 ```
 ![](images/randomwalkmicro.png)
+<br>
 
 ::: fragment
 
