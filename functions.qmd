@@ -19,28 +19,32 @@ format:
     embed-resources: true
     output-file: "index.html"
     fontsize: 24pt
-    
 ---
 
 # Function basics
 
 ## What is a function
-takes input --> does something --> returns output
+
+takes input --\> does something --\> returns output
 
 ::: fragment
 ```{r}
 mean(c(1, 2, 3))
 ```
 :::
+
 <br>
 
 ::: fragment
-A function needs a <span style="color: cornflowerblue;">name</span>, <span style="color: green;">arguments</span> in (), and a <span style="color: darkorange;">body</span> in {}
+A function needs a [name]{style="color: cornflowerblue;"}, [arguments]{style="color: green;"} in (), and a [body]{style="color: darkorange;"} in {}
+
+```{=html}
 <pre><code>
 <span class="func-name">subtract</span> <- function(<span class="func-args">arg1, arg2</span>) { <span class="func-body">
   arg1 - arg2 </span>
 } 
 </code></pre>
+```
 :::
 
 ```{r, echo = FALSE}
@@ -48,6 +52,7 @@ subtract <- function(arg1, arg2) {
   arg1 - arg2
 }
 ```
+
 <br>
 
 ::: fragment
@@ -56,22 +61,22 @@ subtract(2, 1)
 ```
 :::
 
-
 ## Why do we need functions
+
 ::: columns
 ::: {.column width="50%"}
-- Readability
-- Organisation
+-   Readability
+-   Organisation
 :::
 
 ::: {.column width="50%"}
-- Modularity
-- Reusability
+-   Modularity
+-   Reusability
 :::
 :::
 
 ::: fragment
-Imagine calculating the mean without standard functions like `mean` or `sum`: 
+Imagine calculating the mean without standard functions like `mean` or `sum`:
 :::
 
 ::: fragment
@@ -89,14 +94,15 @@ Imagine calculating the mean without standard functions like `mean` or `sum`:
 :::
 
 ## Arguments
-Arguments need to be provided in the correct order, or specified by name:
-<br>
+
+Arguments need to be provided in the correct order, or specified by name: <br>
 
 ::: fragment
 ```{r}
 subtract(2, 1)
 ```
 :::
+
 <br>
 
 ::: fragment
@@ -104,6 +110,7 @@ subtract(2, 1)
 subtract(1, 2)
 ```
 :::
+
 <br>
 
 ::: fragment
@@ -113,6 +120,7 @@ subtract(arg2 = 1, arg1 = 2)
 :::
 
 ## Default values
+
 Make function use more convenient, can hide complexities.
 
 ::: fragment
@@ -120,16 +128,19 @@ Make function use more convenient, can hide complexities.
 subtract(2)
 ```
 :::
+
 <br>
 
 ::: fragment
 This will work if we set a default for `arg2`:
+
 ```{r}
 subtract <- function(arg1, arg2 = 1) {
   arg1 - arg2
 }
 ```
 :::
+
 <br>
 
 ::: fragment
@@ -137,10 +148,11 @@ subtract <- function(arg1, arg2 = 1) {
 subtract(2)
 ```
 :::
+
 <br>
 
+## Ellipsis ('...')
 
-## Ellipsis ('…')
 Additional, optional arguments can be allowed by using '...' as the last argument:
 
 ::: fragment
@@ -150,6 +162,7 @@ my_plot <- function(arg1, arg2, ...) {
 }
 ```
 :::
+
 <br>
 
 ::: fragment
@@ -169,6 +182,7 @@ my_plot(2, 1, col = "red", pch = 17, cex = 2)
 :::
 
 ## Return
+
 A function generally should return something, but this does not:
 
 ::: fragment
@@ -183,11 +197,13 @@ subtract <- function(arg1, arg2) {
 ```{r}
 subtract(2,1)
 ```
-:::  
-<br>  
+:::
+
+<br>
 
 ::: fragment
 Return explicitly with `return`, or place return value at the end of the function:
+
 ```{r}
 subtract <- function(arg1, arg2) {
   result <- arg1 - arg2
@@ -201,10 +217,11 @@ subtract <- function(arg1, arg2) {
 subtract(2,1)
 ```
 :::
+
 <br>
 
-
 ## Return multiple objects
+
 ::: fragment
 ```{r}
 just_return <- function(arg1, arg2) {
@@ -218,6 +235,7 @@ return(arg2)
 ```{r}
 just_return(2, 1)
 ```
+
 This did not work as intended. R functions only return one object. Instead use lists or other data structures:
 :::
 
@@ -235,29 +253,27 @@ just_return(2, 1)
 ```
 :::
 
-
-
 ## Binary operators
 
 ::: columns
 ::: {.column width="50%"}
 ::: fragment
 Standard function syntax:
+
 ```{r}
 sum(c(1,2))
 ```
 :::
-
 :::
 
 ::: {.column width="50%"}
 ::: fragment
 Operator syntax:
+
 ```{r}
 1 + 2
 ```
 :::
-
 :::
 :::
 
@@ -266,7 +282,6 @@ Operator syntax:
 ::: fragment
 Most binary operators come in `%`:
 :::
-
 :::
 
 ::: {.column width="50%"}
@@ -275,7 +290,6 @@ Most binary operators come in `%`:
 3 %in% c(1,2,3)
 ```
 :::
-
 :::
 :::
 
@@ -283,6 +297,7 @@ Most binary operators come in `%`:
 
 ::: fragment
 Custom binary operators -- let's define an operator for "not in":
+
 ```{r}
 `%!in%` <- function(x, y) !(x %in% y)
 ```
@@ -295,6 +310,7 @@ Custom binary operators -- let's define an operator for "not in":
 :::
 
 ## Control structures -- if
+
 `if` a condition is true, do something.
 
 ::: fragment
@@ -326,6 +342,7 @@ add_or_subtract(2,1,"add")
 :::
 
 ## Control structures -- else
+
 `else` instructs what to do when the `if` condition is not met.
 
 ::: fragment
@@ -356,6 +373,7 @@ add_or_subtract(2,1,"subtract")
 :::
 
 ## Control structures -- switch
+
 Instead of many `if` and `else` statements, try `switch`
 
 ::: fragment
@@ -376,6 +394,7 @@ fossil_description <- function(fossil) {
 fossil_description("Tyrannosaurus")
 ```
 :::
+
 ::: fragment
 ```{r}
 fossil_description("Lewis")
@@ -383,6 +402,7 @@ fossil_description("Lewis")
 :::
 
 ## Control structures -- for loops
+
 Loops are used for repeating similar actions multiple times. `for` loops iterate over a set of values. The iterator (`i`) changes with every iteration of the loop:
 
 ::: fragment
@@ -393,6 +413,7 @@ for(i in c(1,2,3)) print(i)
 
 ::: fragment
 To generate sequences of integers, we can use `seq_len`. Let's make a function:
+
 ```{r}
 print_repetitions <- function(n) {
  for (i in seq_len(n)) { 
@@ -409,6 +430,7 @@ print_repetitions(2)
 :::
 
 ## Control structures -- while loops
+
 `while` loops repeat a task until a condition is no longer met.
 
 ::: fragment
@@ -430,11 +452,9 @@ add_until_4(1)
 
 ## Exercise 1 - Function for latitudinal binning
 
-
 ::: columns
 ::: {.column width="70%"}
-Create a function that can sort a data.frame into latitudinal bins. That is, we want a new column that identifies the bin of each entry of the data set. As an exemplary data set, we can use the `reefs` data from `palaeoverse`. 
-
+Create a function that can sort a data.frame into latitudinal bins. That is, we want a new column that identifies the bin of each entry of the data set. As an exemplary data set, we can use the `reefs` data from `palaeoverse`.
 :::
 
 ::: {.column width="30%"}
@@ -442,13 +462,15 @@ Create a function that can sort a data.frame into latitudinal bins. That is, we 
 :::
 :::
 
-<div style="background-color: #212F3C; color: #FFFFFF; padding: 15px;">
+::: {style="background-color: #212F3C; color: #FFFFFF; padding: 15px;"}
 If you are new to writing R functions, try a simpler function that can sort data into the northern and southern hemisphere.
-</div>
+:::
 
-<div style="margin-top: 0.75em;"></div>
+::: {style="margin-top: 0.75em;"}
+:::
 
 Here is what the result may look like when sorted into hemispheres:
+
 ```{r, echo=FALSE}
 library(palaeoverse)
 reefs$hemisphere <- ifelse(reefs$lat>=0, "north", "south")
@@ -460,109 +482,116 @@ reefs[72:73, c("name", "lat", "hemisphere")]
 
 ## Exercise 1 - My solution
 
-
 # Best practices
 
 ## Naming style
+
 Give variables and functions consistent names. These are the two most common styles:
 
-<div style="margin-top: 0.75em;"></div>
+::: {style="margin-top: 0.75em;"}
+:::
 
 ::: columns
 ::: {.column width="50%"}
 snake_case
 
-<div style="width: 300pt; height: 200pt; display: flex; align-items: center; justify-content: center; background-color: white;">
-  <img src="images/snake.jpg">
-</div>
+::: {style="width: 300pt; height: 200pt; display: flex; align-items: center; justify-content: center; background-color: white;"}
+<img src="images/snake.jpg"/>
+:::
 
 used by [Tidyverse's style guide](https://style.tidyverse.org/index.html)
-
 :::
 
 ::: {.column width="50%"}
 CamelCase
 
-<div style="width: 300pt; height: 200pt; display: flex; align-items: center; justify-content: center; background-color: white;">
-  <img src="images/camel.png" style="max-height: 300pt; max-width: 200pt;">
-</div>
+::: {style="width: 300pt; height: 200pt; display: flex; align-items: center; justify-content: center; background-color: white;"}
+<img src="images/camel.png" style="max-height: 300pt; max-width: 200pt;"/>
+:::
 
-used by [Google’s R style guide](https://google.github.io/styleguide/Rguide.html)
-
+used by [Google's R style guide](https://google.github.io/styleguide/Rguide.html)
 :::
 :::
 
 ::: fragment
 Internal functions in R packages are often prefixed with a dot, e.g. `.my_internal_function`. Don't prefix the file name with a dot.
-
 :::
 
 ## Clean coding
+
 Common practices:
 
-::: fragment 
-- Avoid renaming existing functions and variables
+::: fragment
+-   Avoid renaming existing functions and variables
+
 ```{r}
 mean <- mean(c(1, 2, 3))
 mean
 ```
 :::
 
-::: fragment 
+::: fragment
 ```{r}
 mean(c(1, 2, 3))
 ```
+
 R is clever, in this case this still works.
 :::
 
-<div style="margin-top: 0.25em;"></div>
+::: {style="margin-top: 0.25em;"}
+:::
 
 ::: fragment
-- Use `<-` for assignment, not `=`
+-   Use `<-` for assignment, not `=`
+
 ```{r}
 data = c(1, 2, 3)
 data <- c(1, 2, 3)
 ```
 :::
 
-<div style="margin-top: 0.25em;"></div>
+::: {style="margin-top: 0.25em;"}
+:::
 
-::: fragment 
-
+::: fragment
 Example of a detailed style guide: [Tidyverse's style guide](https://style.tidyverse.org/index.html)
-
 :::
 
 ## lintr
+
 The `lintr` package let's you check that your code conforms to your chosen standard.
 
-<div style="margin-top: 1em;"></div>
+::: {style="margin-top: 1em;"}
+:::
 
 ::: fragment
 Here, we choose the tidyverse style:
+
 ```{r eval=FALSE}
 install.packages("lintr")
 lintr::use_lintr(type = "tidyverse")
 ```
 :::
 
-<div style="margin-top: 1em;"></div>
+::: {style="margin-top: 1em;"}
+:::
 
 ::: fragment
 And now we check for style violations in our project directory:
+
 ```{r eval=FALSE}
 lintr::lint_dir()
 ```
-![](images/lintr.png){fig.align="center" height="120pt"}
 
+![](images/lintr.png){fig.align="center" height="120pt"}
 :::
 
 ## Comments
-- document purpose and usage of code
-- explain complex / non-intuitive code
+
+-   document purpose and usage of code
+-   explain complex / non-intuitive code
 
 ::: fragment
-
 ```{r, eval=FALSE}
 # Calculate convex hull
 tmp <- tmp[chull(x = tmp[, lng], 
@@ -571,8 +600,8 @@ tmp <- tmp[chull(x = tmp[, lng],
 :::
 
 ::: fragment
+-   organise code into sections
 
-- organise code into sections
 ```{r, eval=FALSE}
 #=== Set-up ===
   unique_taxa <- unique(occdf[, name])
@@ -589,6 +618,7 @@ Good code shouldn't need a large amount of comments - but comment enough that yo
 ## Comments
 
 Add some general information in the beginning of a large R script.
+
 ```{r, eval = FALSE}
 ### Change point regression analysis
 ### July 2021
@@ -617,13 +647,13 @@ Even better: add formal documentation.
 
 ## roxygen2
 
-- R package, install with `install.packages("roxygen2")`
-- Used to create documentation for R packages (functions, data, …)
-- Start every line of documentation with `’#`
+-   R package, install with `install.packages("roxygen2")`
+-   Used to create documentation for R packages (functions, data, ...)
+-   Start every line of documentation with `’#`
 
-::: fragment 
-
+::: fragment
 This could generate documentation for the `subtract` function from earlier:
+
 ```{r eval = FALSE}
 #' Subtraction
 #' 
@@ -640,16 +670,15 @@ This could generate documentation for the `subtract` function from earlier:
 
 ## ?subtract
 
-![](images/subtraction.png)
-## roxygen2
+![](images/subtraction.png) \## roxygen2
 
 Commonly used roxygen2 tags are:
 
-- @param for function parameters
-- @return for the function output
-- @details for additional 
-- @example provide examples of the function
-- @seealso reference related functions or external resources
+-   @param for function parameters
+-   @return for the function output
+-   @details for additional
+-   @example provide examples of the function
+-   @seealso reference related functions or external resources
 
 For more details, see https://r-pkgs.org/man.html
 
@@ -657,10 +686,9 @@ For more details, see https://r-pkgs.org/man.html
 
 ::: columns
 ::: {.column width="70%"}
-- Make sure your code follows the same style throughout
-- Add in-line comments if necessary
-- Create documentation with `roxygen2`
-
+-   Make sure your code follows the same style throughout
+-   Add in-line comments if necessary
+-   Create documentation with `roxygen2`
 :::
 
 ::: {.column width="30%"}
@@ -668,67 +696,70 @@ For more details, see https://r-pkgs.org/man.html
 :::
 :::
 
-
 ## Exercise 2 - Create a package
+
 From RStudio, create a New Directory (`File -> New Project...`)
 
 ![](images/roxygensetup1.png){fig.align="center" height="400pt"}
-
 
 ## Exercise 2 - Create a package
 
 ![](images/roxygensetup2.png){fig.align="center"}
 
-
 ## Exercise 2 - Create a package
 
 ::: columns
 ::: {.column width="40%"}
-- Save functions in the `R` folder as .R files
-- Documentation will be automatically created in the `man` folder
-- You may need to delete the `NAMESPACE` file once to avoid warnings
-
+-   Save functions in the `R` folder as .R files
+-   Documentation will be automatically created in the `man` folder
+-   You may need to delete the `NAMESPACE` file once to avoid warnings
 :::
 
 ::: {.column width="60%"}
 ![](images/roxygensetup3.png){fig.align="center"}
 :::
-
 :::
-
 
 ## Exercise 2 - use roxygen2
 
 We start by installing `roxygen2` and loading it:
+
 ```{r eval = FALSE}
 install.packages("roxygen2")
 library("roxygen2")
 ```
 
-<div style="margin-top: 0.5em;"></div>
+::: {style="margin-top: 0.5em;"}
+:::
+
 To generate a documentation template for your function, click on `Code --> Insert Roxygen Skeleton` in Rstudio.
 
-<div style="margin-top: 0.5em;"></div>
+::: {style="margin-top: 0.5em;"}
+:::
 
-To generate documentation from our roxygen2 comments, which are denoted by the `#'` tags, run 
+To generate documentation from our roxygen2 comments, which are denoted by the `#'` tags, run
+
 ```{r eval = FALSE}
 roxygenise()
 ```
+
 or press `Ctrl + Shift + D`.
 
-<div style="margin-top: 1.25em;"></div>
+::: {style="margin-top: 1.25em;"}
+:::
 
 We can now read the documentation of our function by calling
+
 ```{r eval = FALSE}
 ?my_function # use the name of your documented function
 ```
 
 ## Exercise 2 - My solution
 
-
 # Testing and Debugging
 
 ## Error handling
+
 Very helpful in complex functions
 
 ::: fragment
@@ -743,10 +774,12 @@ subtract("2", 1)
 ```
 :::
 
-<div style="margin-top: 0.25em;"></div>
+::: {style="margin-top: 0.25em;"}
+:::
 
 ::: fragment
 Check that input is correct and display custom error messages:
+
 ```{r}
 subtract <- function(arg1, arg2) {
   if (is.numeric(arg1) == FALSE) {
@@ -764,19 +797,22 @@ subtract("2", 1)
 :::
 
 ## tryCatch
+
 Use if you anticipate an error but want function to continue.
 
-<div style="margin-top: 0.5em;"></div>
+::: {style="margin-top: 0.5em;"}
+:::
 
 ::: fragment
 Let's try to generate data from a multivariate normal distribution:
+
 ```{r, error=TRUE}
 mvnfast::rmvn(1, mu = c(0,0), sigma = matrix(rep(1,4), 2))
 ```
 :::
 
-<div style="margin-top: 0.5em;"></div>
-
+::: {style="margin-top: 0.5em;"}
+:::
 
 ::: fragment
 `mvnfast::rmvn` is fast but fails for some problematic `sigma` values. In case it fails, we use `MASS::mvrnorm` instead:
@@ -796,20 +832,19 @@ my_rmvn(n = 1, mu = c(0,0), sigma = matrix(rep(1,4), 2))
 :::
 
 ## Traceback
+
 If something went wrong, find out where using `traceback()`:
 
 ::: fragment
-
 ```{r,error=TRUE}
 my_rmvn(n = 1, mu = 0, sigma = matrix(rep(1,4), 2))
 ```
+:::
 
-::: 
-
-<div style="margin-top: 1em;"></div>
+::: {style="margin-top: 1em;"}
+:::
 
 ::: fragment
-
 ```{r,eval=FALSE}
 traceback()
 ```
@@ -818,15 +853,16 @@ traceback()
 :::
 
 ## Break points
-Break points allow you to look inside your function's environment.
-Click next to a line of code in your function to activate a break point (a <span style="color: red;">red</span> dot appears):
+
+Break points allow you to look inside your function's environment. Click next to a line of code in your function to activate a break point (a [red]{style="color: red;"} dot appears):
 
 ::: fragment
-![](images/debug1.png){fig.align="center"} 
+![](images/debug1.png){fig.align="center"}
 :::
 
 ::: fragment
 Now run the function...
+
 ```{r, eval=FALSE}
 my_rmvn(n = 1, mu = c(0,0), sigma = matrix(rep(1,4), 2))
 ```
@@ -838,36 +874,38 @@ You may need to run `devtools::load_all()` first.
 
 ## Break points
 
-![](images/debug2.png){fig.align="center"} 
+![](images/debug2.png){fig.align="center"}
 
 ## Break points
+
 We can now browse the function environment in the console like we normally can browse the global environment. For example we can look at `sigma`:
 
-![](images/debug3.png){fig.align="center" height="225pt"} 
+![](images/debug3.png){fig.align="center" height="225pt"}
 
-Press `Stop` to end the browsing. Don't forget to deactivate the break point by clicking on the <span style="color: red;">red</span> dot in the script.
+Press `Stop` to end the browsing. Don't forget to deactivate the break point by clicking on the [red]{style="color: red;"} dot in the script.
 
 ## Tests
+
 Functions should be tested before they are used.
 
-<div style="margin-top: 2em;"></div>
+::: {style="margin-top: 2em;"}
+:::
 
 ::: fragment
 Sometimes, interactive testing may be enough.
 
 For example, `identical()` tests whether two objects are exactly equal:
+
 ```{r}
 identical(subtract(2,1),
           1)
 ```
-
 :::
 
-<div style="margin-top: 2em;"></div>
-
+::: {style="margin-top: 2em;"}
+:::
 
 ::: fragment
-
 Automated testing with the [testthat](https://testthat.r-lib.org/) R package is superior.
 
 <br>
@@ -877,14 +915,14 @@ Read more on testing at [r-pkgs.org](https://r-pkgs.org/testing-basics.html).
 
 ## testthat
 
-- Used to create unit tests for R packages that can be run automatically
-- R package, install with `install.packages("testthat")`
-- Set up infrastructure for a test with `usethis::test_name`
+-   Used to create unit tests for R packages that can be run automatically
+-   R package, install with `install.packages("testthat")`
+-   Set up infrastructure for a test with `usethis::test_name`
 
-<div style="margin-top: 1em;"></div>
+::: {style="margin-top: 1em;"}
+:::
 
-
-::: fragment 
+::: fragment
 Create a test file for the `subtract` function:
 
 ```{r eval=FALSE}
@@ -892,13 +930,12 @@ usethis::use_test("subtract")
 ```
 
 This has created a `test-subtract.R` file in `package_name/tests/testthat/`
-
-
 :::
 
 ## testthat
 
 In the `test-subtract.R` file, we can write tests, for example:
+
 ```{r, eval=FALSE}
 test_that("subtraction works", {
   expect_equal(subtract(2,1),
@@ -907,14 +944,13 @@ test_that("subtraction works", {
 ```
 
 ::: fragment
-
-If we run this test, we should get <span style="display: inline-block;"><img src="images/testpassed.png" height="35pt" align="center"></span>
-
+If we run this test, we should get [<img src="images/testpassed.png" height="35pt" align="center"/>]{style="display: inline-block;"}
 :::
 
 ## testthat
 
 We can also run all of our tests at once with `test_local` or `test_package("my_package")`:
+
 ```{r, eval=FALSE}
 testthat::test_local()
 ```
@@ -922,28 +958,25 @@ testthat::test_local()
 ![](images/testlocal.png){fig.align="center" height="80pt"}
 
 ::: fragment
-
 If you have the `devtools` package installed, you can also use `devtools::test()` by pressing `Test` in the `Build` tab of Rstudio:
 
 ![](images/testbutton.png){fig.align="center" height="150pt"}
-
 :::
 
-
 ## testthat
+
 Useful tests include:
 
 ::: columns
 ::: {.column width="50%"}
-- expect_equal
-- expect_true, expect_false
+-   expect_equal
+-   expect_true, expect_false
 :::
 
 ::: {.column width="50%"}
-- expect_error
-- expect_snapshot (for results that are difficult to describe with code)
+-   expect_error
+-   expect_snapshot (for results that are difficult to describe with code)
 :::
-
 :::
 
 ::: fragment
@@ -957,7 +990,6 @@ test_that("plot function works", {
 ```
 
 This will create an image in the `tests/testthat/_snaps/function_name` directory. Upon first calling this, inspect the image to see if it is as expected. Future tests will fail if the function call in the test changes the image.
-
 :::
 
 ## Test coverage
@@ -972,10 +1004,12 @@ covr::package_coverage()
 ![](images/packagecoverage.png){fig.align="center" height="50pt"}
 :::
 
-<div style="margin-top: 1em;"></div>
+::: {style="margin-top: 1em;"}
+:::
 
 ::: fragment
-You may need to unload the package before using the `covr` package, e.g. with 
+You may need to unload the package before using the `covr` package, e.g. with
+
 ```{r, eval=FALSE}
 devtools::unload()
 ```
@@ -993,9 +1027,7 @@ covr::report()
 ![](images/report.png){fig.align="center" height="150pt"}
 :::
 
-
 ::: fragment
-
 ![](images/report2.png){fig.align="center" height="200pt"}
 :::
 
@@ -1003,9 +1035,8 @@ covr::report()
 
 ::: columns
 ::: {.column width="70%"}
-- Add tests for your function using `testthat` functionality 
-- Add custom error messages to your function, flagging inappropriate input
-
+-   Add tests for your function using `testthat` functionality
+-   Add custom error messages to your function, flagging inappropriate input
 :::
 
 ::: {.column width="30%"}
@@ -1014,24 +1045,33 @@ covr::report()
 :::
 
 ::: fragment
-
 Setup for testing:
+
 ```{r eval=FALSE}
 install.packages(testthat)
 install.packages(usethis)
 usethis::use_test("function_name")
 ```
+:::
 
+::: fragment
+The devtools package is also very helpful:
+
+```{r eval=FALSE}
+install.packages(devtools)
+```
 :::
 
 # Advanced tools
 
 ## apply
-- `apply` and related functions apply a function to elements of arrays, lists, ...
-- more concise than loops and don't change global environment 
+
+-   `apply` and related functions apply a function to elements of arrays, lists, ...
+-   more concise than loops and don't change global environment
 
 ::: fragment
 For example, to get the class of the first three columns of the `reefs` data:
+
 ```{r}
 reef_classes <- rep(NA,3)
 for (i in 1:3) {
@@ -1039,25 +1079,24 @@ for (i in 1:3) {
 }
 reef_classes
 ```
-
 :::
 
 ::: fragment
-
 Or with apply:
+
 ```{r}
 apply(palaeoverse::reefs[,1:3], MARGIN = 2, FUN = class)
 ```
-
 :::
 
 ## apply
 
-Let's have a look what happened there. `apply(X, MARGIN, FUN)` takes an array X (our `reefs` dataframe), and applies a function (FUN) to elements of that array, specified by MARGIN. 
-<div style="margin-top: 1em;"></div>
+Let's have a look what happened there. `apply(X, MARGIN, FUN)` takes an array X (our `reefs` dataframe), and applies a function (FUN) to elements of that array, specified by MARGIN.
+
+::: {style="margin-top: 1em;"}
+:::
 
 ::: fragment
-
 MARGIN = 2 indicates columns, MARGIN = 1 would be rows. So here we applied the `class` function to every column of `reefs`.
 
 ![](images/reefsdf.png){fig.align="center" height="200pt"}
@@ -1072,18 +1111,19 @@ MARGIN = 2 indicates columns, MARGIN = 1 would be rows. So here we applied the `
 `lapply` is similar to apply but for list or vector input. It returns a list for each element of the data.
 
 ::: fragment
-``` {r}
+```{r}
 data <- list(c(1, 2, 3), c(4, 5))
 lapply(data, mean)
 ```
-
 :::
 
-<div style="margin-top: 0.75em;"></div>
+::: {style="margin-top: 0.75em;"}
+:::
 
 ::: fragment
 `sapply` does the same, but also tries to simplify the output; here we get a vector:
-``` {r}
+
+```{r}
 data <- list(c(1, 2, 3), c(4, 5))
 sapply(data, mean)
 ```
@@ -1093,93 +1133,91 @@ sapply(data, mean)
 
 `vapply` is a safer version of `sapply`, it requires the user to specify the anticipated class and length of the elements of the output:
 
-<div style="margin-top: 1.25em;"></div>
+::: {style="margin-top: 1.25em;"}
+:::
 
 ::: fragment
-
-``` {r}
+```{r}
 data <- list(c(1, 2, 3), c(4, 5))
 vapply(data, FUN = mean, FUN.VALUE = numeric(1))
 ```
 
-<div style="margin-top: 1em;"></div>
+::: {style="margin-top: 1em;"}
+:::
 
 Here, we specified in FUN.VALUE that each element of the output should be a numeric of length 1.
 :::
 
 ## Environment
+
 Environment can be conceptualised as a place where objects with a name and value exist.
 
 ::: fragment
+For example, when we run
 
-For example, when we run 
-```{r} 
+```{r}
 x <- 1
 ```
 
 `x` now exists in the global environment, and has the value `1`.
-
 :::
 
 <br>
 
 ::: fragment
-Each function, `for` loop, ..., creates its own environment. 
+Each function, `for` loop, ..., creates its own environment.
 :::
 
 ## Environment
 
 If we run the following function to assign to `b` the value of `a`
 
-``` {r}
+```{r}
 a_to_b <- function(a) b <- a
 a_to_b(a = 1)
 ```
 
-::: fragment 
+::: fragment
 and then look for `b` in the global environment
 :::
 
 ::: fragment
-``` {r, error=TRUE}
+```{r, error=TRUE}
 b
 ```
 
-we get an error because `b` only existed within the function environment. 
+we get an error because `b` only existed within the function environment.
 :::
 
 <br>
 
-::: fragment 
+::: fragment
 More on environments: [adv-r.hadley.nz/environments.html](https://adv-r.hadley.nz/environments.html)
-
 :::
-
 
 ## Scoping
 
 R uses scoping rules to look for variables (or functions). If a variable is not found in a function environment, R looks in the parent environment (i.e. the environment in which the function was created).
 
 ::: fragment
-```{r} 
+```{r}
 x <- 1
 double_x <- function(y) 2 * x + y
 double_x(0)
 ```
-
 :::
 
 ::: fragment
-
 `x` is a free variable in the `double_x` function -- it is not supplied to or defined in the function. Instead, it's looked up in the environment where `double_x` was created, the global environment.
 
-<div style="margin-top: 1em;"></div>
+::: {style="margin-top: 1em;"}
+:::
 
 This can get tricky, see here for more details: [bookdown.org/rdpeng/rprogdatascience/scoping-rules-of-r.html](https://bookdown.org/rdpeng/rprogdatascience/scoping-rules-of-r.html)
-
 :::
 
 ## Measuring performance
+
 If you have large data sets and complex functions, you may want to enhance their performance.
 
 <br>
@@ -1190,7 +1228,6 @@ To check how long an operation takes, use system.time:
 ```{r}
 system.time(rnorm(10^6))
 ```
-
 :::
 
 ## Measuring performance
@@ -1201,6 +1238,7 @@ The `microbenchmark` package performs an operation many times, and measures the 
 
 ::: fragment
 What is faster, `rnorm` or `rlnorm`?
+
 ```{r}
 microbenchmark::microbenchmark(rnorm(10^4),
                                rlnorm(10^4))
@@ -1210,24 +1248,250 @@ microbenchmark::microbenchmark(rnorm(10^4),
 
 ## Profiling
 
+The `profvis` package lets you identify bottlenecks in your code:
+
+::: fragment
+```{r, eval=FALSE}
+short_pause <- function(x) Sys.sleep(0.1 * x)
+long_pause <- function(x) Sys.sleep(0.2 * x)
+
+time_waste <- function(x) {
+  short_pause(x)
+  long_pause(x)
+}
+```
+
+```{r, eval=FALSE}
+profvis::profvis(time_waste(1))
+
+```
+:::
+
+::: fragment
+![](images/profiling.png)
+:::
+
 ## Speeding up functions
 
-- vectorisation
-- outer
+Only spend time trying to make your code faster if
+
+-   it works as intended
+-   you have identified the parts that are slowing it down
+
+<br>
+
+::: fragment
+Here is a good overview on making R functions run faster: [Best coding practices in R](https://bookdown.org/content/d1e53ac9-28ce-472f-bc2c-f499f18264a3/speedtips.html)
+:::
+
+## Memory allocation
+
+Pre-allocating memory is faster than growing objects repeatedly.
+
+::: fragment
+Assume, we have recorded the results of 1,000 dice rolls:
+
+```{r}
+data <- sample.int(6, n = 100, replace = TRUE)
+
+```
+:::
+
+::: fragment
+Now, we want to check which ones show "6". Compare these two approaches:
+
+::: columns
+::: {.column width="50%"}
+```{r}
+is_six_1 <- function(x) {
+  res <- NULL
+  for(i in seq_along(x)) {
+    res[i] <- x[i] == 6
+  }
+  res
+}
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+is_six_2  <- function(x) {
+  res <- rep(NA,length(x))
+  for(i in seq_along(x)) {
+    res[i] <- x[i] == 6
+  }
+  res
+}
+```
+:::
+:::
+:::
+
+## Memory allocation
+
+Let's check which approach is faster:
+
+```{r}
+microbenchmark::microbenchmark(is_six_1(data),
+                               is_six_2(data), times = 1000)
+```
+
+<br>
+
+::: fragment
+`is_six_2()` is faster, as R doesn't have to grow the `res` object in every iteration.
+:::
+
+## Vectorisation
+
+R has many functions that are vectorised.
+<br>
+
+::: fragment
+Instead of running a loop to check each value of our dice rolls, we can check them all at once by taking advantage of the ability of `==` to take vector input:
+
+::: columns
+::: {.column width="50%"}
+```{r}
+is_six_2  <- function(x) {
+  res <- rep(NA,length(x))
+  for(i in seq_along(x)) {
+    res[i] <- x[i] == 6
+  }
+  res
+}
+```
+:::
+
+::: {.column width="50%"}
+```{r}
+is_six_3 <- function(x) {
+  x == 6
+}
+```
+:::
+:::
+:::
+
+## Vectorisation
+
+```{r}
+microbenchmark::microbenchmark(is_six_2(data), 
+                               is_six_3(data), times = 1000)
+```
+<br>
+
+This time, the second version is much faster.
+
+## Vectorisation
+
+Vectorised matrix functions like `rowSums()`, `colSums()` or `rowMeans()`can lead to impressive speedups:
+
+::: fragment
+```{r}
+data <- matrix(rnorm(10^4), nrow = 100)
+
+microbenchmark::microbenchmark(
+  apply(data, 2, sum),
+  colSums(data),
+  times = 1000)
+```
+:::
+
 
 ## Rcpp
+The `Rcpp` package allows for writing functions in C++. It requires the installation of a C++ compiler ([R tools](https://cran.r-project.org/bin/windows/Rtools/) for Windows, Xcode for Mac, possibly "sudo apt-get install r-base-dev" on Linux)
+
+<br>
+
+::: fragment
+Read more at [Rcpp: Seamless R and C++ Integration](https://dirk.eddelbuettel.com/code/rcpp.html) or[Avanced R](http://adv-r.had.co.nz/Rcpp.html) 
+:::
+
+<br>
+
+::: fragment
+I also highly recommend [ChatGpt](https://chat.openai.com/) for help with creating C++ functions.
+:::
+
+## Rcpp 
+As an example, let's compare a random walk implemented in R with one implemented with Rcpp.
+
+::: fragment
+First, the R version:
+```{r}
+random_walk_R <- function(steps) {
+  walk <- numeric(steps)
+  for (i in 2:steps) {
+    walk[i] <- walk[i-1] + ifelse(runif(1) > 0.5, 1, -1)
+  }
+  return(walk)
+}
+```
+:::
+
+
+## Rcpp 
+Next, the Rcpp version:
+
+```{r, eval=FALSE}
+library(Rcpp)
+sourceCpp(
+'#include <Rcpp.h>
+using namespace Rcpp;
+
+// [[Rcpp::export]]
+NumericVector random_walk_Rcpp(int steps) {
+  NumericVector walk(steps);
+  for(int i = 1; i < steps; i++) {
+    walk[i] = walk[i-1] + (R::runif(0, 1) > 0.5 ? 1 : -1);
+  }
+  return walk;
+}')
+
+```
+
+::: fragment
+We now have the function `random_walk_Rcpp` in the global environment.
+:::
+
+## Rcpp 
+Let's make sure both versions work:
+
+```{r, eval = FALSE}
+plot(random_walk_R(1000), type = "l", ylim = c(-50,50))
+points(random_walk_Rcpp(1000),type = "l", col = "red")
+```
+![](images/randomwalk.png){fig.align="center" height="300pt"}
+
+## Rcpp 
+
+Now let us compare the speed:
+
+```{r, eval = FALSE}
+microbenchmark::microbenchmark(
+  random_walk_Rcpp(1000),
+  random_walk_Rcpp(1000),
+  times = 100)
+```
+![](images/randomwalkmicro.png)
+
+::: fragment
+
+Loops are much faster in C++!
+
+:::
 
 ## Exercise 4
 
 ::: columns
 ::: {.column width="70%"}
-- Can you use apply or similar functions to reduce the amount of code?
-- Profile your function. Are there any slow parts?
-- Can you use vectorisation or other tricks to speed it up?
+-   Can you use apply or similar functions to reduce the amount of code?
+-   Profile your function. Are there any slow parts?
+-   Can you use vectorisation or other tricks to speed it up?
 :::
 
 ::: {.column width="30%"}
 ![](images/earth.png){fig.align="center" height="140pt"}
 :::
 :::
-
