@@ -766,7 +766,7 @@ We start by installing `roxygen2` and loading it:
 
 ```{r eval = FALSE}
 install.packages("roxygen2")
-library("roxygen2")
+library(roxygen2)
 ```
 
 ::: {style="margin-top: 0.5em;"}
