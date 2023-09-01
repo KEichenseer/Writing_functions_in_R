@@ -407,7 +407,7 @@ Loops are used for repeating similar actions multiple times. `for` loops iterate
 
 ::: fragment
 ```{r}
-for(i in c(1,2,3)) print(i)
+for (i in c(1,2,3)) print(i)
 ```
 :::
 
@@ -454,7 +454,7 @@ add_until_4(1)
 
 ::: columns
 ::: {.column width="70%"}
-Create a function that can sort a data.frame into latitudinal bins. That is, we want a new column that identifies the bin of each entry of the data set. As an exemplary data set, we can use the `reefs` data from `palaeoverse`.
+Create a function that can sort a data.frame into hemispheres. That is, we want a new column that identifies the hemisphere of each entry of the data set. As an exemplary data set, we will use the `reefs` data from `palaeoverse` here and in the next exercises.
 :::
 
 ::: {.column width="30%"}
@@ -462,13 +462,18 @@ Create a function that can sort a data.frame into latitudinal bins. That is, we 
 :::
 :::
 
-::: {style="background-color: #212F3C; color: #FFFFFF; padding: 15px;"}
-If you are new to writing R functions, try a simpler function that can sort data into the northern and southern hemisphere.
+::: fragment
+
+::: {style="background-color: #212F3C; color: #FFFFFF; padding: 10px;"}
+If you are an experienced R user, you can up the difficulty by writing a function that can sort data into any number of latitudinal bins of equal width.
+:::
+
 :::
 
 ::: {style="margin-top: 0.75em;"}
 :::
 
+::: fragment
 Here is what the result may look like when sorted into hemispheres:
 
 ```{r, echo=FALSE}
@@ -480,7 +485,42 @@ reefs$hemisphere <- ifelse(reefs$lat>=0, "north", "south")
 reefs[72:73, c("name", "lat", "hemisphere")]
 ```
 
-## Exercise 1 - My solution
+:::
+
+## Exercise 1 - A solution for hemispheres
+```{r exercise 1 - a solution for hemispheres}
+#| code-fold: true
+#| collapse: true
+sort_hemisphere <- function(df) {
+  df$hemisphere <- rep(NA, nrow(df))
+  for (i in 1:nrow(df)) {
+    if (df$lat[i] >= 0) {
+      df$hemisphere[i] <- "north"
+    } else {
+      df$hemisphere[i] <- "south"
+    }
+  }
+  return(df)
+}
+```
+
+## Exercise 1 - A solution for latitudinal bins
+```{r exercise 1 - a solution for latitudinal bins}
+#| code-fold: true
+#| collapse: true
+sort_lat_bins <- function(df, n_bin) {
+  bin_width <- 180 / n_bin
+  df$lat_bin <- rep(NA, nrow(df))
+  for (i in 1:nrow(df)) {
+    bin_number <- floor((df$lat[i] + 90) / bin_width) + 1
+    bin_start <- (bin_number - 1) * bin_width - 90
+    bin_end <- bin_start + bin_width
+    df$lat_bin[i] <- (bin_start + bin_end) / 2
+  }
+  return(df)
+}
+# The bin names are the midpoints of the latitudinal bins.
+```
 
 # Best practices
 
@@ -754,7 +794,49 @@ We can now read the documentation of our function by calling
 ?my_function # use the name of your documented function
 ```
 
-## Exercise 2 - My solution
+## Exercise 2 - A solution for hemispheres
+```{r exercise 2 - a solution for hemispheres}
+#| code-fold: true
+#| collapse: true
+
+#' Sort data into hemispheres
+#'
+#' This function sorts data into hemispheres based on latitude values.
+#' Rows with latitudes \eqn{\geq} 0 are categorised as "north"; rows with latitudes \eqn{<} 0 are categorised as "south".
+#'
+#' @param df A data frame with a column named 'lat' representing latitudinal values.
+#'
+#' @return A data frame with an additional column 'hemisphere', indicating  the hemisphere of each row.
+#'
+#' @examples
+#' data <- data.frame(lat = c(30, -45, 60, -10))
+#' data <- sort_hemisphere(data)
+#'
+#' @export
+sort_hemisphere <- function(df) {
+  # initialise hemisphere column
+  df$hemisphere <- rep(NA, nrow(df))
+  # loop through df and assign hemispheres
+  for (i in 1:nrow(df)) {
+    if (df$lat[i] >= 0) {
+      df$hemisphere[i] <- "north"
+    } else {
+      df$hemisphere[i] <- "south"
+    }
+  }
+  return(df)
+}
+
+```
+
+## Exercise 2 - A solution for hemispheres
+After running `roxygen2::roxygenise()`, `?sort_hemisphere` should show:
+<details>
+  <summary>Click to reveal image</summary>
+  
+  ![](images/sort_hemisphere_docu.png){fig.align="center" height="390pt"}
+  
+</details>
 
 # Testing and Debugging
 
@@ -917,7 +999,7 @@ Read more on testing at [r-pkgs.org](https://r-pkgs.org/testing-basics.html).
 
 -   Used to create unit tests for R packages that can be run automatically
 -   R package, install with `install.packages("testthat")`
--   Set up infrastructure for a test with `usethis::test_name`
+-   Set up infrastructure for a test with `usethis::use_test()`
 
 ::: {style="margin-top: 1em;"}
 :::
@@ -1062,6 +1144,78 @@ install.packages(devtools)
 ```
 :::
 
+## Exercise 3 - A solution for hemispheres
+Checks and error messages:
+```{r exercise 3 - a solution for hemispheres}
+#| code-fold: true
+#| collapse: true
+sort_hemisphere <- function(df) {
+  #
+  # --- check that input has the correct format
+  #
+  if (!is.data.frame(df)) {
+    stop("'df' is not a dataframe.")
+  }
+  if (!"lat" %in% names(df)) {
+    stop("'df' does not contain a column named 'lat'.")
+  }
+  if (!is.numeric(df$lat)) {
+    stop("Column 'lat' is not numeric.")
+  }
+  if (!(all(df$lat <= 90) && all(df$lat >= -90))) {
+    stop("Column 'lat' may only contain latitudes from -90 to 90.")
+  }
+  #
+  # --- assign hemispheres
+  #
+  # initialise hemisphere column
+  df$hemisphere <- rep(NA, nrow(df))
+  # loop through df and assign hemispheres
+  for (i in 1:nrow(df)) {
+    if (df$lat[i] >= 0) {
+      df$hemisphere[i] <- "north"
+    } else {
+      df$hemisphere[i] <- "south"
+    }
+  }
+  return(df)
+}
+
+```
+
+## Exercise 3 - A solution for hemispheres
+`testthat` tests:
+```{r exercise 3 - a solution for hemispheres - tests, eval=FALSE}
+#| code-fold: true
+#| collapse: true
+# Tests for sort_hemisphere function
+
+test_that("Function rejects non-dataframe input", {
+  expect_error(sort_hemisphere("not a dataframe"), "'df' is not a dataframe.")
+})
+
+test_that("Function rejects dataframe without 'lat' column", {
+  df <- data.frame(lng = c(30, -45, 60, -10))
+  expect_error(sort_hemisphere(df), "'df' does not contain a column named 'lat'.")
+})
+
+test_that("Function rejects non-numeric 'lat' column", {
+  df <- data.frame(lat = c("30N", "45S", "60N", "10S"))
+  expect_error(sort_hemisphere(df), "Column 'lat' is not numeric.")
+})
+
+test_that("Function rejects 'lat' vales < -90 or > 90", {
+  df <- data.frame(lat = c(30, -95, 100, -10 ))
+  expect_error(sort_hemisphere(df), "Column 'lat' may only contain latitudes from -90 to 90.")
+})
+
+test_that("Function correctly assigns hemispheres", {
+  df <- data.frame(lat = c(30, -45, 60, -10))
+  result <- sort_hemisphere(df)
+  expect_equal(result$hemisphere, c("north", "south", "north", "south"))
+})
+```
+
 # Advanced tools
 
 ## apply
@@ -1147,6 +1301,62 @@ vapply(data, FUN = mean, FUN.VALUE = numeric(1))
 
 Here, we specified in FUN.VALUE that each element of the output should be a numeric of length 1.
 :::
+
+## do.call
+`do.call()` takes a function and a list of arguments, and applies the function to the arguments. This can be useful in a variety of situations:
+
+<br>
+
+::: fragment
+To combine data:
+```{r}
+a <- list(c(1, 2, 3), c(4, 5, 6))
+do.call(rbind, a)
+```
+:::
+
+<br>
+
+::: fragment
+When we have a function name as a string:
+```{r}
+my_function <- "mean"
+do.call(my_function, list(c(1, 2, 3)))
+```
+:::
+
+## do.call
+
+With dynamic arguments:
+
+::: fragment
+For example, we want to allow the user to specify additional arguments for a custom plot function, including `xlim`. In case he doesn't specify it, we want to automatically generate `xlim` values:
+:::
+
+:::fragment
+```{r}
+my_plot <- function(x, ...) {
+    args <- list(...) # save the additional arguments
+  if("xlim" %in% names(args)) {
+    xlim <- args$xlim # if user provides xlim, use that
+    args$xlim <- NULL # to avoid argument duplication
+  } else {
+    xlim <- range(x) + c(-1, 1) # automatic xlim
+  }
+  do.call(plot, c(list(x = x, xlim = xlim), args))
+}
+```
+:::
+
+## do.call
+
+```{r, fig.width=6, fig.height=3.3}
+par(mfrow = c(1,2))
+my_plot(1:3, pch = 17, 
+        main = "automatic xlim")
+my_plot(1:3, pch = 17, xlim = c(1, 5), 
+        main = "user-specified xlim")
+```
 
 ## Environment
 
@@ -1305,7 +1515,7 @@ Now, we want to check which ones show "6". Compare these two approaches:
 ```{r}
 is_six_1 <- function(x) {
   res <- NULL
-  for(i in seq_along(x)) {
+  for (i in seq_along(x)) {
     res[i] <- x[i] == 6
   }
   res
@@ -1317,7 +1527,7 @@ is_six_1 <- function(x) {
 ```{r}
 is_six_2  <- function(x) {
   res <- rep(NA,length(x))
-  for(i in seq_along(x)) {
+  for (i in seq_along(x)) {
     res[i] <- x[i] == 6
   }
   res
@@ -1355,7 +1565,7 @@ Instead of running a loop to check each value of our dice rolls, we can check th
 ```{r}
 is_six_2  <- function(x) {
   res <- rep(NA,length(x))
-  for(i in seq_along(x)) {
+  for (i in seq_along(x)) {
     res[i] <- x[i] == 6
   }
   res
@@ -1381,7 +1591,7 @@ microbenchmark::microbenchmark(is_six_2(data),
 ```
 <br>
 
-This time, the second version is much faster.
+The vectorised version `is_six_3()` is much faster.
 
 ## Vectorisation
 
@@ -1400,12 +1610,12 @@ microbenchmark::microbenchmark(
 
 
 ## Rcpp
-The `Rcpp` package allows for writing functions in C++. It requires the installation of a C++ compiler ([R tools](https://cran.r-project.org/bin/windows/Rtools/) for Windows, Xcode for Mac, possibly "sudo apt-get install r-base-dev" on Linux)
+The `Rcpp` package allows for integrating C++ code with R, which can make R functions a lot faster. It requires the installation of a C++ compiler ([R tools](https://cran.r-project.org/bin/windows/Rtools/) for Windows, Xcode for Mac, possibly "sudo apt-get install r-base-dev" on Linux)
 
 <br>
 
 ::: fragment
-Read more at [Rcpp: Seamless R and C++ Integration](https://dirk.eddelbuettel.com/code/rcpp.html) or[Avanced R](http://adv-r.had.co.nz/Rcpp.html) 
+Read more at [Rcpp: Seamless R and C++ Integration](https://dirk.eddelbuettel.com/code/rcpp.html) or [Avanced R](http://adv-r.had.co.nz/Rcpp.html) 
 :::
 
 <br>
@@ -1470,11 +1680,12 @@ Now let us compare the speed:
 
 ```{r, eval = FALSE}
 microbenchmark::microbenchmark(
-  random_walk_Rcpp(1000),
+  random_walk_R(1000),
   random_walk_Rcpp(1000),
   times = 100)
 ```
 ![](images/randomwalkmicro.png)
+
 <br>
 
 ::: fragment
@@ -1487,12 +1698,74 @@ Loops are much faster in C++!
 
 ::: columns
 ::: {.column width="70%"}
+-   Try profiling your code with `profvis()`. The result may not be very informative as this was probably a short, rather quick function
 -   Can you use apply or similar functions to reduce the amount of code?
--   Profile your function. Are there any slow parts?
 -   Can you use vectorisation or other tricks to speed it up?
+-   Compare your old aproach and your updated function with `microbenchmark()`
+
 :::
 
 ::: {.column width="30%"}
 ![](images/earth.png){fig.align="center" height="140pt"}
 :::
 :::
+
+
+## Exercise 4 - A solution for hemispheres
+Profvis doesn't tell us much here:
+```{r exercise 4 - a solution for hemispheres - profvis, eval=FALSE}
+#| code-fold: true
+#| collapse: true
+library(profvis)
+profvis(sort_hemisphere(reefs))
+```
+
+<details>
+  <summary>Click to reveal image</summary>
+  
+  ![](images/profvis_ex4.png
+){fig.align="center" height="200pt"}
+  
+</details>
+
+
+## Exercise 4 - A solution for hemispheres
+Using vapply instead of a `for` loop:
+```{r exercise 4 - a solution for hemispheres - vapply}
+#| code-fold: true
+#| collapse: true
+sort_hemisphere_vapply <- function(df) {
+  df$hemisphere <- vapply(df$lat, function(l) {
+    if (l >= 0) {
+      return("north")
+    } else {
+      return("south")
+    }
+  }, FUN.VALUE = character(1))
+  return(df)
+}
+```
+
+## Exercise 4 - A solution for hemispheres
+Taking advantage of vectorisation:
+```{r exercise 4 - a solution for hemispheres - vectorised}
+#| code-fold: true
+#| collapse: true
+sort_hemisphere_ifelse <- function(df) {
+  df$hemisphere <- ifelse(df$lat >= 0, "north", "south")
+  return(df)
+}
+```
+
+## Exercise 4 - A solution for hemispheres
+Comparing the approaches with `microbenchmark`:
+```{r exercise 4 - a solution for hemispheres - microbenchmark}
+#| code-fold: true
+#| collapse: true
+library(microbenchmark)
+microbenchmark(
+  sort_hemisphere(reefs),
+  sort_hemisphere_vapply(reefs),
+  sort_hemisphere_ifelse(reefs)
+)
+```
