@@ -951,7 +951,7 @@ my_rmvn(n = 1, mu = c(0,0), sigma = matrix(rep(1,4), 2))
 :::
 
 ::: fragment
-You may need to run `devtools::load_all()` first.
+You may need to save the script and source it (press `source` in the Rstudio toolbar)
 :::
 
 ## Break points
@@ -1090,7 +1090,7 @@ covr::package_coverage()
 :::
 
 ::: fragment
-You may need to unload the package before using the `covr` package, e.g. with
+If you have loaded the package, you may need to unload the package before using the `covr` package, e.g. with
 
 ```{r, eval=FALSE}
 devtools::unload()
@@ -1136,13 +1136,6 @@ usethis::use_test("function_name")
 ```
 :::
 
-::: fragment
-The devtools package is also very helpful:
-
-```{r eval=FALSE}
-install.packages(devtools)
-```
-:::
 
 ## Exercise 3 - A solution for hemispheres
 Checks and error messages:
