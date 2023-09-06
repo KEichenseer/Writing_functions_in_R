@@ -597,9 +597,38 @@ data <- c(1, 2, 3)
 Example of a detailed style guide: [Tidyverse's style guide](https://style.tidyverse.org/index.html)
 :::
 
+
+## Automatic formatting
+
+Automatically format R code by highlighting it and clicking on `Code` --> `Reformat Code` or by pressing `Ctrl`+`Shift`+`A`
+
+<br>
+
+::: fragment
+Unformatted code
+```{r eval=FALSE}
+subtract <- function(arg1,arg2 ){
+arg1 -arg2}
+```
+
+:::
+
+<br>
+
+::: fragment
+Formatted code
+```{r eval=FALSE}
+subtract <- function(arg1, arg2) {
+  arg1 - arg2
+}
+```
+
+:::
+
+
 ## lintr
 
-The `lintr` package let's you check that your code conforms to your chosen standard.
+The [`lintr` package](https://cran.r-project.org/web/packages/lintr/vignettes/lintr.html) let's you check that your code conforms to your chosen standard.
 
 ::: {style="margin-top: 1em;"}
 :::
@@ -625,6 +654,7 @@ lintr::lint_dir()
 
 ![](images/lintr.png){fig.align="center" height="120pt"}
 :::
+
 
 ## Comments
 
