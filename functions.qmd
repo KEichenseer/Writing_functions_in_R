@@ -719,7 +719,7 @@ Even better: add formal documentation.
 
 -   R package, install with `install.packages("roxygen2")`
 -   Used to create documentation for R packages (functions, data, ...)
--   Start every line of documentation with `’#`
+-   Start every line of documentation with `#'`
 
 ::: fragment
 This could generate documentation for the `subtract` function from earlier:
@@ -792,11 +792,11 @@ From RStudio, create a New Directory (`File -> New Project...`)
 
 ## Exercise 2 - use roxygen2
 
-We start by installing `roxygen2` and loading it:
+We start by installing `roxygen2` and the `devtools` package, if you haven't installed them yet:
 
 ```{r eval = FALSE}
 install.packages("roxygen2")
-library(roxygen2)
+install.packages("devtools")
 ```
 
 ::: {style="margin-top: 0.5em;"}
@@ -810,7 +810,7 @@ To generate a documentation template for your function, click on `Code --> Inser
 To generate documentation from our roxygen2 comments, which are denoted by the `#'` tags, run
 
 ```{r eval = FALSE}
-roxygenise()
+devtools::document()
 ```
 
 or press `Ctrl + Shift + D`.
@@ -860,7 +860,7 @@ sort_hemisphere <- function(df) {
 ```
 
 ## Exercise 2 - A solution for hemispheres
-After running `roxygen2::roxygenise()`, `?sort_hemisphere` should show:
+After running `devtools::deocument()`, `?sort_hemisphere` should show:
 <details>
   <summary>Click to reveal image</summary>
   
